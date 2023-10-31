@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unirme a sala</title>
+</head>
+<body>
+    <h1>Unirse a sala</h1>
+    <div>
+        <form action="">
+            <label for="pin">PIN</label>
+            <input type="number" name="pin" id="pin">
+
+            <label for="nickname">Nickname</label>
+            <input type="text" name="nickname" id="nickname">
+            <button id="unirmeSala">Unirme a sala</button>
+        </form>
+    </div>
+
+    <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:1234')
+
+        const unirmeSala = document.getElementById('unirmeSala')
+
+        unirmeSala.onclick = function(e) {
+            e.preventDefault()
+            const pin = document.getElementById('pin').value
+            const nickname = document.getElementById('nickname').value
+            console.log('Enviando solicitud para unirse a sala...', {pin, nickname})
+            socket.emit('join_room', {pin, nickname})
+            console.log(socket.rooms)
+        }
+
+        socket.on('connect', (data) => {
+            console.log('conectado con el id', socket.id)
+        })
+
+        socket.on('join_status', (data) => {
+            console.log('Joined ', data)
+        })
+
+    </script>
+</body>
+</html>

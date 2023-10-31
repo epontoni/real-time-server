@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear sala</title>
+</head>
+<body>
+    <h1>Crear sala</h1>
+    <div id="lobby">
+        <h2>Lobby</h2>
+        <h3>Pin: <span id="lobbyId"></span></h3>
+        <h3>Esperando jugadores...</h3>
+        <div>
+            <ul id="players">
+            </ul>
+        </div>
+        <button id="btnIniciar" disabled>Iniciar</button>
+    </div>
+    <button id="crearSala">Crear sala</button>
+
+    <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+    <script>
+
+        const socket = io('http://localhost:1234')
+
+        const btnIniciar = document.getElementById('btnIniciar')
+
+        socket.on('room_created', (data)=>{
+            console.log('Room created', data)
+            document.getElementById('lobbyId').innerHTML = data.room.pin
+           btnIniciar.removeAttribute('disabled')
+            window.history.pushState(data, 'lobby', `/lobby/${data.room.pin}`)
+
+        })
+
+        btnIniciar.onclick = function() {
+            console.log('Emitir evento para iniciar...')
+            socket.emit('start_game', {})
+        }
+
+        const crearSala = document.getElementById('crearSala')
+
+        crearSala.onclick = function() {
+            console.log('Enviando solicitud para crear sala...')
+            socket.emit('create_room', {payload: 'Some data...'})
+        }
+
+        // Un usuario se une al lobby
+        socket.on('join_status', (data) => {
+            console.log('a user was joined ', data)
+
+            const ul = document.getElementById('players')
+            ul.innerHTML = ''
+
+            const p = data.room.players.map( player => {
+                const li = document.createElement("li")
+                li.textContent = `${player.nickname} (${player.id})`
+                ul.appendChild(li)
+            })
+        })
+
+        socket.on('connect', (data) => {
+            console.log('conectado con el id', socket.id)
+        })
+
+    </script>
+</body>
+</html>

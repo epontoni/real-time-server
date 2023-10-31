@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Time</title>
+</head>
+<body>
+    <h1>Real Time</h1>
+    <p>data: <%= data %></p>
+
+    <p>(<%= clients?.length %>) clients:</p>
+    <ul>
+        <% if(clients) for (let client of clients) { %>
+            <li><%= client %></li>
+        <% } %>
+    </ul>
+
+    <p>rooms: <%= rooms.length %></p>
+    <div>
+        <ul>
+            <% for (room of rooms) { %>
+                <li><b>PIN: </b><%= room.pin %> (<%= room.id %>)</li>
+            <% } %>
+        </ul>
+    </div>
+
+    <h2>Actions</h2>
+
+    <ul>
+        <li><a href="/create_room">Crear sala</a></li>
+        <li><a href="/join_room">Unirme a sala</a></li>
+    </ul>
+</body>
+</html>
